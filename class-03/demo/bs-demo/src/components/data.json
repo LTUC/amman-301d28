@@ -1,0 +1,23 @@
+[
+    {
+        "name":"John",
+        "age":18,
+        "title":"full stack engineer"
+    },
+    {
+        "name":"Mark",
+        "age":25,
+        "title":"frontend engineer"
+    },
+    {
+        "name":"Laurel",
+        "age":30,
+        "title":"backend engineer"
+    },
+    {
+        "name":"Marry",
+        "age":17,
+        "title":"DBA"
+    }
+
+]
