@@ -8,6 +8,11 @@ export class User extends Component {
                 <h1>department: {this.props.department}</h1>
                 <h1>age: {this.props.age}</h1>
                 <button onClick={()=>this.props.deleteUser(this.props.userId)}>Delete</button>
+                <button 
+                onClick={()=>{this.props.showUpdateForm(this.props.username,this.props.department,this.props.age,this.props.userId)}}>
+                    Update
+                </button>
+
             </div>
         )
     }

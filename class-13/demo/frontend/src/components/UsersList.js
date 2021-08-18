@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import axios from "axios";
 import { withAuth0 } from '@auth0/auth0-react';
-import User from "./User"
+import User from "./User";
+import UpdateForm from './UpdateForm';
+
 export class UsersList extends Component {
     constructor(props){
         super(props);
@@ -9,7 +11,9 @@ export class UsersList extends Component {
             usersList:[],
             age:'',
             username:'',
-            department:''
+            department:'',
+            userId:'',
+            showUpdateForm:false
         }
     }
     componentDidMount= ()=>{
@@ -19,7 +23,7 @@ export class UsersList extends Component {
                 let config={
                     headers: {"Authorization" : `Bearer ${jwt}`},
                     method: 'get',
-                    baseURL: "http://localhost:8000",
+                    baseURL: "http://localhost:8001",
                     url: '/get-users'                    
                 }
                 axios(config).then(response=>{
@@ -70,17 +74,45 @@ export class UsersList extends Component {
         });
     }
     deleteUser=(userId)=>{
-        let config={
-            method: 'delete',
-            baseURL: "http://localhost:8000",
-            url: `/delete-user/${userId}`,         
+        if (this.props.auth0.isAuthenticated){
+            this.props.auth0.getIdTokenClaims().then(result=>{
+                let jwt=result.__raw;
+                let config={
+                    headers:{"Authorization" : `Bearer ${jwt}`},
+                    method: 'delete',
+                    baseURL: "http://localhost:8001",
+                    url: `/delete-user/${userId}`,         
+                }
+                axios(config).then(result=>console.log());
+            })
         }
-        axios(config).then(result=>console.log())
+
+        
+    }
+    showUpdateForm=(userName, age, department,userId)=>{
+        this.setState({
+            showUpdateForm:true,
+            username:userName,
+            age:age,
+            department:department,
+            userId:userId
+
+        })
     }
     render() {
         return (
             <div>
                 <h1>Users List</h1>
+                {
+                    this.state.showUpdateForm&&
+                    <UpdateForm 
+                            userName={this.state.username} 
+                            department={this.state.department}
+                            age={this.state.age}
+                            userId={this.state.userId}
+                        />
+                }
+                
                 <form onSubmit={e=>this.submitFormHandler(e)}>
                     <input onChange={e=>{this.usernameHandler(e)}} type="text" placeholder="username"/>
                     <input onChange={e=>{this.ageHandler(e)}} type="text" placeholder="age"/>
@@ -94,6 +126,7 @@ export class UsersList extends Component {
                                     age={user.age} 
                                     department={user.department}
                                     userId={user._id}
+                                    showUpdateForm={this.showUpdateForm}
                                 />
                     })
                 }
